@@ -37,7 +37,6 @@ Built on the **Stellar Testnet** using the **Freighter wallet extension**, Stell
 
 ---
 
-## 🖼️ Screenshots
 
 ### 🌌 Landing Page — Light Rays Hero
 > Mouse-interactive WebGL background, glassmorphism nav, hero CTA
