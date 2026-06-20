@@ -331,19 +331,6 @@ function Header() {
                 </div>
             </section>
 
-            {/* ── Logo / tech marquee ── */}
-            <div className="lp-marquee">
-                <div className="lp-marquee-track">
-                    {[...Array(2)].map((_, dup) => (
-                        <div className="lp-marquee-group" key={dup}>
-                            {["Stellar", "Soroban", "Freighter", "Horizon RPC", "Rust", "React", "Testnet", "Stellar SDK"].map((t) => (
-                                <span className="lp-marquee-item" key={t}><span className="lp-marquee-star">✦</span>{t}</span>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </div>
-
             {/* ── Features (bento) ── */}
             <section className="lp-features" id="features">
                 <div className="lp-section-inner">
