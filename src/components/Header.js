@@ -5,6 +5,9 @@ import Crowdfund from "./Crowdfund";
 import Reveal from "./Reveal";
 import Counter from "./Counter";
 import FAQ from "./FAQ";
+import Contracts from "./Contracts";
+import Roadmap from "./Roadmap";
+import Testimonials from "./Testimonials";
 import { connectWallet, fetchBalance, sendPayment } from "./Freighter";
 
 /* ── SVG Icons ── */
@@ -424,6 +427,29 @@ function Header() {
                 </div>
             </section>
 
+            {/* ── Smart Contracts ── */}
+            <section className="lp-contracts" id="contracts">
+                <div className="lp-section-inner">
+                    <Reveal>
+                        <div className="lp-section-eyebrow">On-chain architecture</div>
+                        <h2 className="lp-section-title">Two contracts, talking to each other</h2>
+                        <p className="lp-faq-sub">StellarFund and DonorBadge are live Soroban contracts — every donation triggers a real cross-contract call.</p>
+                    </Reveal>
+                    <Reveal delay={120}><Contracts /></Reveal>
+                </div>
+            </section>
+
+            {/* ── Roadmap ── */}
+            <section className="lp-roadmap" id="roadmap">
+                <div className="lp-section-inner">
+                    <Reveal>
+                        <div className="lp-section-eyebrow">Roadmap</div>
+                        <h2 className="lp-section-title">Where StellarFlow is headed</h2>
+                    </Reveal>
+                    <Reveal delay={120}><Roadmap /></Reveal>
+                </div>
+            </section>
+
             {/* ── Metrics band ── */}
             <section className="lp-metrics">
                 <div className="lp-section-inner lp-metrics-grid">
@@ -443,6 +469,17 @@ function Header() {
                         <div className="metric-num"><Counter to={99.9} decimals={1} suffix="%" /></div>
                         <div className="metric-lbl">Network uptime</div>
                     </Reveal>
+                </div>
+            </section>
+
+            {/* ── Testimonials ── */}
+            <section className="lp-testimonials" id="testimonials">
+                <div className="lp-section-inner">
+                    <Reveal>
+                        <div className="lp-section-eyebrow">Loved by builders</div>
+                        <h2 className="lp-section-title">What people are saying</h2>
+                    </Reveal>
+                    <Reveal delay={120}><Testimonials /></Reveal>
                 </div>
             </section>
 
