@@ -6,8 +6,17 @@
 //! unique donors, and each donor's running total. The campaign beneficiary
 //! (`owner`) can withdraw the collected funds at any time.
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, token, Address, Env,
+    contract, contractclient, contracterror, contractevent, contractimpl, contracttype, token,
+    Address, Env,
 };
+
+/// Minimal client interface for the companion DonorBadge contract. Lets
+/// StellarFund make a typed cross-contract call without depending on the badge
+/// crate directly. See `contracts/badge` for the implementation.
+#[contractclient(name = "BadgeClient")]
+pub trait Badge {
+    fn award(env: Env, donor: Address, total: i128) -> u32;
+}
 
 #[contracttype]
 #[derive(Clone)]
@@ -18,6 +27,7 @@ pub enum DataKey {
     Raised,                 // cumulative amount raised (monotonic, for progress)
     Donors,                 // count of unique donors
     Closed,                 // true once the goal has been reached
+    Badge,                  // optional DonorBadge contract for cross-contract awards
     Contribution(Address),  // per-donor running total
 }
 
@@ -100,7 +110,17 @@ impl FundContract {
             let donors: u32 = s.get(&DataKey::Donors).unwrap();
             s.set(&DataKey::Donors, &(donors + 1));
         }
-        env.storage().persistent().set(&key, &(prev + amount));
+        let donor_total = prev + amount;
+        env.storage().persistent().set(&key, &donor_total);
+
+        // Inter-contract communication: if a DonorBadge contract is registered,
+        // call it to award/upgrade this donor's loyalty tier from their running
+        // total. The call is best-effort relative to the donation itself, but
+        // because it shares the same transaction it is atomic — if the badge
+        // contract panics, the whole donation reverts.
+        if let Some(badge) = s.get::<DataKey, Address>(&DataKey::Badge) {
+            BadgeClient::new(&env, &badge).award(&from, &donor_total);
+        }
 
         // Close the campaign once the goal is met.
         let goal: i128 = s.get(&DataKey::Goal).unwrap();
@@ -110,6 +130,15 @@ impl FundContract {
 
         Donated { from, amount, total: raised }.publish(&env);
         Ok(raised)
+    }
+
+    /// Register the companion DonorBadge contract. Owner-only. Once set, every
+    /// donation triggers a cross-contract `award` call on the badge contract.
+    pub fn set_badge(env: Env, badge: Address) {
+        let s = env.storage().instance();
+        let owner: Address = s.get(&DataKey::Owner).unwrap();
+        owner.require_auth();
+        s.set(&DataKey::Badge, &badge);
     }
 
     /// Withdraw all collected funds to the beneficiary. Only the owner can call.
@@ -148,6 +177,9 @@ impl FundContract {
     }
     pub fn is_closed(env: Env) -> bool {
         env.storage().instance().get(&DataKey::Closed).unwrap()
+    }
+    pub fn badge(env: Env) -> Option<Address> {
+        env.storage().instance().get(&DataKey::Badge)
     }
     pub fn contribution(env: Env, who: Address) -> i128 {
         env.storage()
