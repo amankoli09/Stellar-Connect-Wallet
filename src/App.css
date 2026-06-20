@@ -878,15 +878,23 @@ body {
 }
 .bento-card {
   position: relative; overflow: hidden;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  background:
+    radial-gradient(120% 120% at 100% 100%, rgba(77, 107, 255, 0.10) 0%, transparent 45%),
+    #0b0d18;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px; padding: 28px;
-  backdrop-filter: blur(10px); transition: transform 0.25s, border-color 0.25s, background 0.25s;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
 }
-.bento-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(77, 107, 255,0.4), transparent);
+/* subtle dot-grid texture in the corner (ChainFund look) */
+.bento-card::after {
+  content: ''; position: absolute; right: 16px; bottom: 16px; width: 140px; height: 90px;
+  background-image: radial-gradient(rgba(120, 145, 255, 0.28) 1px, transparent 1px);
+  background-size: 14px 14px;
+  -webkit-mask-image: radial-gradient(circle at bottom right, #000, transparent 70%);
+  mask-image: radial-gradient(circle at bottom right, #000, transparent 70%);
+  pointer-events: none;
 }
-.bento-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); }
+.bento-card:hover { transform: translateY(-4px); border-color: rgba(106,141,255,0.45); box-shadow: 0 16px 44px rgba(20, 30, 90, 0.5); }
 .bento-lg { grid-row: span 2; display: flex; flex-direction: column; }
 .bento-wide { grid-column: span 2; }
 
@@ -1334,4 +1342,17 @@ body {
     .cf-hero-visual { min-height: 320px; }
     .cf-hero-features { grid-template-columns: 1fr; }
     .cf-hf:not(:last-child) { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+}
+
+/* ── ChainFund-style section header (title left, copy + CTA right) ── */
+.cf-sec-head {
+    display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px;
+    align-items: start; margin-bottom: 48px;
+}
+.cf-sec-head-left .lp-section-title { margin: 0; }
+.cf-sec-head-right { display: flex; flex-direction: column; align-items: flex-start; padding-top: 6px; }
+.cf-sec-head-text { font-size: 1.02rem; line-height: 1.65; color: rgba(255,255,255,0.6); margin: 0 0 24px; }
+@media (max-width: 860px) {
+    .cf-sec-head { grid-template-columns: 1fr; gap: 22px; }
+    .cf-sec-head-right { align-items: flex-start; }
 }

@@ -334,9 +334,20 @@ function Header() {
             {/* ── Features (bento) ── */}
             <section className="lp-features" id="features">
                 <div className="lp-section-inner">
-                    <Reveal>
-                        <div className="lp-section-eyebrow">Why StellarFlow</div>
-                        <h2 className="lp-section-title">Everything you need<br />to move money fast</h2>
+                    <Reveal className="cf-sec-head">
+                        <div className="cf-sec-head-left">
+                            <div className="cf-eyebrow">[ Why StellarFlow? ]</div>
+                            <h2 className="lp-section-title">Everything you need<br />to move money fast</h2>
+                        </div>
+                        <div className="cf-sec-head-right">
+                            <p className="cf-sec-head-text">
+                                StellarFlow merges fast, non-custodial payments with real on-chain
+                                smart contracts — unlocking trustless transfers and crowdfunding on Stellar.
+                            </p>
+                            <button className="btn btn-glass-primary cf-cta" onClick={handleConnect} disabled={isConnecting}>
+                                {isConnecting ? <><span className="spinner"></span> Connecting…</> : <>Get Started <ArrowRightIcon /></>}
+                            </button>
+                        </div>
                     </Reveal>
                     <div className="lp-bento">
                         <Reveal className="bento-card bento-lg">
