@@ -6,6 +6,7 @@ import {
     donate,
     CONTRACT_ID,
     FundError,
+    getBadgeTier,
 } from "./Fund";
 
 const short = (a) => (a ? `${a.slice(0, 4)}…${a.slice(-4)}` : "");
@@ -19,7 +20,11 @@ const fmt = (n) => Number(n).toLocaleString(undefined, { maximumFractionDigits: 
 export default function Crowdfund({ address = null, onDonated }) {
     const [campaign, setCampaign]   = useState(null);
     const [recent, setRecent]       = useState([]);
+    
     const [mine, setMine]           = useState(0);
+    
+    const [badgeTier, setBadgeTier] = useState("None");
+
     const [amount, setAmount]       = useState("");
     const [status, setStatus]       = useState("idle"); // idle | pending | success | error
     const [hash, setHash]           = useState("");
@@ -32,7 +37,10 @@ export default function Crowdfund({ address = null, onDonated }) {
             if (!mounted.current) return;
             setCampaign(c);
             setRecent(r);
-            if (address) setMine(await getMyContribution(address));
+           if (address) {
+    setMine(await getMyContribution(address));
+    setBadgeTier(await getBadgeTier(address));
+}
         } catch (e) {
             console.warn("campaign refresh failed:", e);
         }
@@ -51,11 +59,21 @@ export default function Crowdfund({ address = null, onDonated }) {
         setHash("");
         setErrorMsg("");
         try {
-            const txHash = await donate(address, amount);
-            setHash(txHash);
-            setStatus("success");
-            setAmount("");
-            await refresh();
+            const oldTier = await getBadgeTier(address);
+
+const txHash = await donate(address, amount);
+
+setHash(txHash);
+setStatus("success");
+setAmount("");
+
+await refresh();
+
+const newTier = await getBadgeTier(address);
+
+if (oldTier !== newTier) {
+   alert(`🎉 Congratulations! Your badge tier is now ${newTier}`);
+}
             onDonated?.();
         } catch (e) {
             setStatus("error");
@@ -126,7 +144,11 @@ export default function Crowdfund({ address = null, onDonated }) {
                     {mine > 0 && (
                         <div className="cf-mine">You've contributed <strong>{fmt(mine)} XLM</strong> to this campaign</div>
                     )}
-
+                        {address && (
+    <div className="cf-badge">
+        Badge Tier: <strong>{badgeTier}</strong>
+    </div>
+)}
                     {/* ── Transaction status ── */}
                     {status !== "idle" && (
                         <div className="cf-status">
