@@ -332,7 +332,7 @@ stellar-connect-wallet/
 
 ### Live app: https://stellar-connect-wallet-rr5q.vercel.app/
 
-### Demo video : 
+### Demo video : https://youtu.be/8IG4hLKOBYI?si=qmRZ8nDYfCVZ8ZDe
 
 ---
 
