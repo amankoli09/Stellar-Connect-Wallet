@@ -117,7 +117,8 @@ Frontend tests cover the pure conversion, validation, and tier-mapping helpers
 in [`src/lib/stellar.js`](src/lib/stellar.js) — stroop ↔ XLM conversion, Stellar
 address format validation, and badge-tier naming.
 
-> 📸 _Screenshot: test output with passing tests_ — **[add image]**
+> <img width="1181" height="533" alt="Screenshot 2026-06-21 at 9 07 53 PM" src="https://github.com/user-attachments/assets/681eab2d-6b93-47d5-aa3b-c03473b3b937" />
+
 
 ---
 
@@ -130,7 +131,8 @@ Every push and pull request to `main` runs **[GitHub Actions](.github/workflows/
 | **Soroban contracts** | install Rust → `cargo test --workspace` |
 | **Frontend** | `npm ci` → `npm test` → `npm run build` |
 
-> 📸 _Screenshot: CI/CD pipeline running (green)_ — **[add image]**
+> <img width="1457" height="545" alt="Screenshot 2026-06-21 at 9 11 15 PM" src="https://github.com/user-attachments/assets/52cfb77a-526b-4bfa-a075-06d659ffbc10" />
+
 
 ---
 
@@ -328,8 +330,9 @@ stellar-connect-wallet/
 
 ## 🌐 Live Demo
 
-> **Live app:** https://stellar-connect-wallet-rr5q.vercel.app/
-> **Demo video (1–2 min):** **[add link]**
+### Live app: https://stellar-connect-wallet-rr5q.vercel.app/
+
+### Demo video : 
 
 ---
 
