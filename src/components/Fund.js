@@ -1,4 +1,3 @@
-/* global BigInt */
 // ════════════════════════════════════════════════════════════════
 //  StellarFund — Soroban crowdfunding contract client
 //  Reads campaign state, submits donations, and streams contract
