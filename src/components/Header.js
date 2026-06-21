@@ -8,6 +8,7 @@ import FAQ from "./FAQ";
 import Contracts from "./Contracts";
 import Roadmap from "./Roadmap";
 import Testimonials from "./Testimonials";
+import MagicRings from "./MagicRings";
 import coinsImg from "../media/landphoto.png";
 import { connectWallet, fetchBalance, sendPayment } from "./Freighter";
 
@@ -422,6 +423,27 @@ function Header() {
 
             {/* ── Terminal Demo ── */}
             <section className="lp-terminal" id="terminal">
+                <div className="lp-terminal-rings">
+                    <MagicRings
+                        color="#5b7cff"
+                        colorTwo="#6a8dff"
+                        ringCount={6}
+                        speed={1}
+                        attenuation={10}
+                        lineThickness={2}
+                        baseRadius={0.35}
+                        radiusStep={0.1}
+                        scaleRate={0.1}
+                        opacity={0.7}
+                        noiseAmount={0.08}
+                        ringGap={1.5}
+                        fadeIn={0.7}
+                        fadeOut={0.5}
+                        followMouse={true}
+                        mouseInfluence={0.2}
+                        parallax={0.05}
+                    />
+                </div>
                 <div className="lp-terminal-inner">
                     <Reveal>
                         <div className="lp-section-eyebrow">Live demo</div>

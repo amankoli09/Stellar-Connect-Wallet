@@ -1432,3 +1432,13 @@ body {
     .cf-bento > :nth-child(n) { grid-column: 1 !important; grid-row: auto !important; }
     .chip-stage { min-height: 200px; }
 }
+
+/* ── MagicRings background in the terminal/demo section ── */
+.lp-terminal { position: relative; overflow: hidden; }
+.lp-terminal-rings {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(60% 60% at 50% 45%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(60% 60% at 50% 45%, #000 30%, transparent 75%);
+}
+.lp-terminal-inner { position: relative; z-index: 1; }
