@@ -190,19 +190,19 @@ Every push and pull request to `main` runs **[GitHub Actions](.github/workflows/
 ### 🌌 Landing Page — Light Rays Hero
 > Mouse-interactive WebGL background, glassmorphism nav, hero CTA
 
-<img width="1451" height="731" alt="Landing page" src="https://github.com/user-attachments/assets/81c34928-29e4-4960-851d-d674d73a6d9b" />
+<img width="1466" height="741" alt="Screenshot 2026-06-21 at 9 22 30 PM" src="https://github.com/user-attachments/assets/ca43827a-6c15-48fe-ae0e-85077fe12d7d" />
 
 
 ### 🔌 Wallet Connected — Dashboard View
 > Balance displayed, wallet address shown, Recent Activity panel ready
 
-<img width="1451" height="731" alt="Dashboard" src="https://github.com/user-attachments/assets/6ec4c169-7585-4c91-ba2e-2ce949468a8f" />
+<img width="1466" height="741" alt="Screenshot 2026-06-21 at 9 22 46 PM" src="https://github.com/user-attachments/assets/519d97b6-a4e6-4276-bbc8-37d745d2920d" />
 
 
 ### 📤 Sending XLM — Transfer Panel
 > Recipient address input with Stellar format validation, amount field, Process Transfer button
 
-<img width="1451" height="731" alt="Transfer panel" src="https://github.com/user-attachments/assets/61d41ac1-0a3f-42e4-928b-3930ca03a98b" />
+<img width="1466" height="741" alt="Screenshot 2026-06-21 at 9 23 52 PM" src="https://github.com/user-attachments/assets/af6a1436-2fe1-4572-86ef-1150fb049714" />
 
 
 ### ✅ Successful Testnet Transaction
