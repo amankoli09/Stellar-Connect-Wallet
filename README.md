@@ -162,7 +162,7 @@ Every push and pull request to `main` runs **[GitHub Actions](.github/workflows/
 
 ## 📖 Front-End dApp — StellarFlow
 
-**StellarFlow** is the non-custodial React + Freighter front-end that pairs with the StellarFund contract. It connects a user's Freighter wallet, reads their address and live XLM balance, and signs/submits real Stellar Testnet transactions — no sign-up, no middleman, no custody of keys.
+**StellarFlow** is the non-custodial React + Freighter front-end that pairs with the StellarFund contract. It connects a user's Freighter wallet,reads their address and live XLM balance, and signs/submits real Stellar Testnet transactions — no sign-up, no middleman, no custody of keys.
 
 - ✅ **Connect Wallet** — Freighter integration in [`src/components/Freighter.js`](src/components/Freighter.js): `setAllowed()` → permission, `requestAccess()` → address retrieval, `signTransaction()` → transaction signing
 - ✅ **Wallet Balance Checker** — live XLM balance displayed on connection
