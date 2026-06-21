@@ -10,6 +10,7 @@ import Roadmap from "./Roadmap";
 import Testimonials from "./Testimonials";
 import MagicRings from "./MagicRings";
 import coinsImg from "../media/landphoto.png";
+import logoImg from "../media/logo.png";
 import { connectWallet, fetchBalance, sendPayment } from "./Freighter";
 
 /* ── SVG Icons ── */
@@ -241,7 +242,7 @@ function Header() {
                 {/* In-panel nav */}
                 <nav className={`cf-nav ${scrolled ? "cf-nav-scrolled" : ""}`}>
                     <div className="cf-nav-brand">
-                        <span className="lp-nav-logo-dot" />
+                        <img className="cf-nav-logo" src={logoImg} alt="StellarFlow logo" />
                         <span className="cf-nav-wordmark">StellarFlow</span>
                     </div>
                     <div className="cf-nav-pill">

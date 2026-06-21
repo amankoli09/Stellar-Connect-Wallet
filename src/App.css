@@ -1271,6 +1271,7 @@ body {
     padding: 26px 36px 0;
 }
 .cf-nav-brand { display: flex; align-items: center; gap: 10px; }
+.cf-nav-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; display: block; }
 .cf-nav-wordmark { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
 .cf-nav-pill {
     display: flex; align-items: center; gap: 4px;
