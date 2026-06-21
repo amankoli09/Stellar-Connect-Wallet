@@ -31,6 +31,12 @@ jobs:
       - name: Run contract unit tests
         run: cargo test --workspace
 
+      - name: Install cargo-tarpaulin
+        run: cargo install cargo-tarpaulin
+
+      - name: Run test coverage
+        run: cargo tarpaulin --workspace --out Xml
+
   frontend:
     name: Frontend — test & build
     runs-on: ubuntu-latest

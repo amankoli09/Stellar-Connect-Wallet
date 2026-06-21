@@ -79,3 +79,17 @@ fn counts_unique_donors() {
     assert_eq!(client.minted(), 2);
     assert_eq!(client.admin(), client.admin()); // admin view is readable
 }
+
+#[test]
+#[should_panic(expected = "HostError")]
+fn unauthorized_award_fails() {
+    let env = Env::default();
+    
+    let admin = Address::generate(&env);
+    let contract_id = env.register(BadgeContract, (admin.clone(),));
+    let client = BadgeContractClient::new(&env, &contract_id);
+    
+    let donor = Address::generate(&env);
+    
+    client.award(&donor, &1_000_000_000);
+}
