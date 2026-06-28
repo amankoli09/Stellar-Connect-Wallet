@@ -29,6 +29,7 @@ pub enum DataKey {
     Closed,                 // true once the goal has been reached
     Badge,                  // optional DonorBadge contract for cross-contract awards
     Contribution(Address),  // per-donor running total
+    Deadline,               // campaign expiry (u64 timestamp)
 }
 
 #[contracterror]
@@ -38,6 +39,9 @@ pub enum Error {
     ZeroAmount = 1,      // donation amount must be positive
     CampaignClosed = 2,  // goal already reached, no more donations
     NothingRaised = 3,   // withdraw called with an empty balance
+    CampaignExpired = 4, // donation after deadline
+    CampaignNotExpired = 5, // refund before deadline
+    NoContribution = 6,  // refund with zero contribution
 }
 
 /// Emitted on every successful donation.
@@ -59,13 +63,22 @@ pub struct Withdrawn {
     pub amount: i128,
 }
 
+/// Emitted when a donor reclaims their funds from a failed campaign.
+#[contractevent]
+#[derive(Clone)]
+pub struct Refunded {
+    #[topic]
+    pub to: Address,
+    pub amount: i128,
+}
+
 #[contract]
 pub struct FundContract;
 
 #[contractimpl]
 impl FundContract {
     /// Initialize the campaign at deploy time.
-    pub fn __constructor(env: Env, owner: Address, token: Address, goal: i128) {
+    pub fn __constructor(env: Env, owner: Address, token: Address, goal: i128, deadline: u64) {
         let s = env.storage().instance();
         s.set(&DataKey::Owner, &owner);
         s.set(&DataKey::Token, &token);
@@ -73,6 +86,7 @@ impl FundContract {
         s.set(&DataKey::Raised, &0i128);
         s.set(&DataKey::Donors, &0u32);
         s.set(&DataKey::Closed, &false);
+        s.set(&DataKey::Deadline, &deadline);
     }
 
     /// Donate `amount` of the campaign token. Pulls funds from `from` into the
@@ -85,6 +99,12 @@ impl FundContract {
         }
 
         let s = env.storage().instance();
+
+        let deadline: u64 = s.get(&DataKey::Deadline).unwrap();
+        if env.ledger().timestamp() > deadline {
+            return Err(Error::CampaignExpired);
+        }
+
         let closed: bool = s.get(&DataKey::Closed).unwrap();
         if closed {
             return Err(Error::CampaignClosed);
@@ -159,6 +179,48 @@ impl FundContract {
         Ok(balance)
     }
 
+    /// Refund a donor's contribution if the campaign failed to reach its goal by the deadline.
+    pub fn refund(env: Env, donor: Address) -> Result<i128, Error> {
+        donor.require_auth();
+
+        let s = env.storage().instance();
+        
+        let deadline: u64 = s.get(&DataKey::Deadline).unwrap();
+        if env.ledger().timestamp() <= deadline {
+            return Err(Error::CampaignNotExpired);
+        }
+
+        let closed: bool = s.get(&DataKey::Closed).unwrap();
+        if closed {
+            return Err(Error::CampaignClosed); // Goal was reached, no refunds
+        }
+
+        let key = DataKey::Contribution(donor.clone());
+        let prev: i128 = env.storage().persistent().get(&key).unwrap_or(0);
+        if prev <= 0 {
+            return Err(Error::NoContribution);
+        }
+
+        // Zero out contribution
+        env.storage().persistent().set(&key, &0i128);
+        
+        // Subtract from total raised
+        let mut raised: i128 = s.get(&DataKey::Raised).unwrap();
+        raised -= prev;
+        s.set(&DataKey::Raised, &raised);
+
+        // Refund the token
+        let token: Address = s.get(&DataKey::Token).unwrap();
+        token::Client::new(&env, &token).transfer(
+            &env.current_contract_address(),
+            &donor,
+            &prev,
+        );
+
+        Refunded { to: donor, amount: prev }.publish(&env);
+        Ok(prev)
+    }
+
     // ── read-only views ──
     pub fn goal(env: Env) -> i128 {
         env.storage().instance().get(&DataKey::Goal).unwrap()
@@ -186,6 +248,9 @@ impl FundContract {
             .persistent()
             .get(&DataKey::Contribution(who))
             .unwrap_or(0)
+    }
+    pub fn deadline(env: Env) -> u64 {
+        env.storage().instance().get(&DataKey::Deadline).unwrap()
     }
 }
 
