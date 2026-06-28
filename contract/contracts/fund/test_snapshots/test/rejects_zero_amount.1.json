@@ -152,6 +152,18 @@
                       "key": {
                         "vec": [
                           {
+                            "symbol": "Deadline"
+                          }
+                        ]
+                      },
+                      "val": {
+                        "u64": "1000"
+                      }
+                    },
+                    {
+                      "key": {
+                        "vec": [
+                          {
                             "symbol": "Donors"
                           }
                         ]
