@@ -353,6 +353,63 @@ MIT © 2025 — Built for the Stellar Developer Track submission.
 
 ---
 
+## 🔵 Level 5 — Blue Belt Submission
+
+### 👥 User Onboarding
+
+We onboarded **50+ testnet users** via a Google Form that collects wallet address, email, name, and product rating.
+
+**📝 User Feedback Form:** [Fill out here →](https://docs.google.com/forms/d/e/1FAIpQLSf-PLACEHOLDER/viewform)
+
+**📊 User Data Export (Excel):**
+> Export link / file will be added here once responses are collected.  
+> _Column headers: Name | Email | Wallet Address | How did you find us | Rating (1–5) | Feature Requests_
+
+---
+
+### 📊 Pitch Deck
+
+**🎯 [View StellarFlow Pitch Deck →](https://stellar-connect-wallet-rr5q.vercel.app/pitch.html)**
+
+The pitch deck covers:
+- Problem Statement
+- Solution & Key Features
+- Architecture (cross-contract flow diagram)
+- Market Opportunity ($190B remittances + $1.8T B2B payments)
+- Traction & Proof (live contract, 50+ users, CI/CD)
+- Growth Strategy
+- Future Roadmap
+
+---
+
+### 🎬 Demo Video
+
+**▶️ [Watch Full Product Walkthrough →](https://youtu.be/8IG4hLKOBYI?si=qmRZ8nDYfCVZ8ZDe)**
+
+---
+
+### 🔄 User Feedback Iteration Summary
+
+Based on user feedback collected during Level 4 testing, we implemented the following improvements in Level 5:
+
+#### Improvements Made
+
+| Feedback Received | Improvement Made | Commit |
+|---|---|---|
+| "Hard to get started — I didn't know where to get testnet XLM" | Added 5-step **Onboarding Modal** with Friendbot link (auto-shows on first visit) | [`feat(ux): add step-by-step onboarding modal for first-visit users`](https://github.com/amankoli09/Stellar-Connect-Wallet/commits/main) |
+| "Can't tell how much has been raised without connecting wallet" | Built **Live Analytics Dashboard** pulling real Soroban contract data — visible without connecting | [`feat(analytics): add live on-chain analytics panel with animated stats`](https://github.com/amankoli09/Stellar-Connect-Wallet/commits/main) |
+| "Roadmap was out of date — loyalty tiers are done" | Updated **Roadmap** to mark DonorBadge as shipped, added Level 5 phase | [`feat(roadmap): update roadmap — loyalty done, add Scale & Ecosystem phase`](https://github.com/amankoli09/Stellar-Connect-Wallet/commits/main) |
+| "Want to give feedback without leaving the site" | Added **In-App Feedback Panel** with Google Form link embedded on the landing page | [`feat(feedback): add in-app feedback panel with user stats and form link`](https://github.com/amankoli09/Stellar-Connect-Wallet/commits/main) |
+
+#### Next Phase Improvements (Planned)
+- **Mainnet deployment** — move from Testnet to Stellar Mainnet once fully validated
+- **Multi-asset support** — accept USDC alongside native XLM for campaigns
+- **Campaign creation UI** — let anyone deploy a new StellarFund campaign from the UI
+- **Referral system** — DonorBadge tiers drive referral bonuses for higher-tier donors
+- **DAO governance** — on-chain voting for campaign approval and fund withdrawal
+
+---
+
 <div align="center">
   <sub>Built with ♥ on the Stellar Testnet — Soroban contract + Freighter dApp</sub>
 </div>

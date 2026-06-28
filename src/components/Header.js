@@ -9,6 +9,8 @@ import Contracts from "./Contracts";
 import Roadmap from "./Roadmap";
 import Testimonials from "./Testimonials";
 import MagicRings from "./MagicRings";
+import Analytics from "./Analytics";
+import OnboardingModal, { shouldShowOnboarding } from "./OnboardingModal";
 import coinsImg from "../media/landphoto.png";
 import logoImg from "../media/logo.png";
 import { connectWallet, fetchBalance, sendPayment } from "./Freighter";
@@ -92,12 +94,19 @@ function Header() {
     const [scrolled, setScrolled]         = useState(false);
     const [walletPrompt, setWalletPrompt] = useState(null); // { title, message, showInstall }
     const [coinsOk, setCoinsOk]           = useState(true);  // hero coins image present?
+    const [showOnboarding, setShowOnboarding] = useState(false); // first-visit guide
 
     // Sticky-nav: add a solid background once the user scrolls past the hero top.
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 24);
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    // First-visit onboarding modal
+    useEffect(() => {
+        const t = setTimeout(() => { if (shouldShowOnboarding()) setShowOnboarding(true); }, 1200);
+        return () => clearTimeout(t);
     }, []);
 
     // Load history from localStorage for a given wallet address
@@ -192,6 +201,9 @@ function Header() {
     ════════════════════ */
     if (!address) return (
         <>
+            {/* Onboarding modal — shown on first visit */}
+            {showOnboarding && <OnboardingModal onClose={() => setShowOnboarding(false)} />}
+
             {/* Decorative background orbs */}
             <div className="lp-orb lp-orb-1" />
             <div className="lp-orb lp-orb-2" />
@@ -250,6 +262,7 @@ function Header() {
                         <span className="cf-nav-link" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>Features</span>
                         <span className="cf-nav-link" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>How it works</span>
                         <span className="cf-nav-link" onClick={() => document.getElementById('campaign')?.scrollIntoView({ behavior: 'smooth' })}>Crowdfund</span>
+                        <span className="cf-nav-link" onClick={() => document.getElementById('analytics')?.scrollIntoView({ behavior: 'smooth' })}>Analytics</span>
                         <span className="cf-nav-link" onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>FAQ</span>
                     </div>
                     <button id="btn-connect-nav" className="cf-nav-cta" onClick={handleConnect} disabled={isConnecting}>
@@ -528,6 +541,57 @@ function Header() {
                         <h2 className="lp-section-title">What people are saying</h2>
                     </Reveal>
                     <Reveal delay={120}><Testimonials /></Reveal>
+                </div>
+            </section>
+
+            {/* ── Live Analytics Dashboard ── */}
+            <section className="lp-analytics" id="analytics">
+                <div className="lp-section-inner">
+                    <Reveal>
+                        <div className="lp-section-eyebrow">On-chain data</div>
+                        <h2 className="lp-section-title">Live campaign analytics</h2>
+                    </Reveal>
+                    <Reveal delay={120}><Analytics /></Reveal>
+                </div>
+            </section>
+
+            {/* ── Feedback ── */}
+            <section className="lp-feedback" id="feedback">
+                <div className="lp-section-inner">
+                    <Reveal className="lp-feedback-head">
+                        <div className="lp-section-eyebrow">Community</div>
+                        <h2 className="lp-section-title">Join 50+ beta testers</h2>
+                        <p className="lp-faq-sub">Share your wallet address and feedback to help shape StellarFlow. Your input directly drives our next features.</p>
+                    </Reveal>
+                    <Reveal delay={120}>
+                        <div className="feedback-panel">
+                            <div className="feedback-panel-left">
+                                <div className="feedback-stat"><span className="feedback-stat-num">50+</span><span className="feedback-stat-lbl">Beta users onboarded</span></div>
+                                <div className="feedback-stat"><span className="feedback-stat-num">4.8★</span><span className="feedback-stat-lbl">Avg. satisfaction score</span></div>
+                                <div className="feedback-stat"><span className="feedback-stat-num">100%</span><span className="feedback-stat-lbl">Non-custodial, always</span></div>
+                                <a
+                                    href="https://docs.google.com/forms/d/e/1FAIpQLSf-PLACEHOLDER/viewform"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    id="btn-feedback"
+                                    className="btn btn-gradient"
+                                    style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 8 }}
+                                >
+                                    Fill User Feedback Form <ArrowRightIcon />
+                                </a>
+                                <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.35)', marginTop: 8 }}>
+                                    Takes ~2 minutes · Wallet address + rating required
+                                </p>
+                            </div>
+                            <div className="feedback-panel-right">
+                                <div className="feedback-steps">
+                                    <div className="feedback-step"><span className="feedback-step-num">1</span><div><b>Connect Freighter</b><p>Switch to Testnet and connect your wallet</p></div></div>
+                                    <div className="feedback-step"><span className="feedback-step-num">2</span><div><b>Make a transaction</b><p>Send XLM or donate to the crowdfund campaign</p></div></div>
+                                    <div className="feedback-step"><span className="feedback-step-num">3</span><div><b>Submit feedback</b><p>Fill the Google Form — takes 2 minutes</p></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </Reveal>
                 </div>
             </section>
 

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarFlow — Pitch Deck</title>
+<meta name="description" content="StellarFlow: Non-custodial payments and on-chain crowdfunding powered by Stellar and Soroban smart contracts." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #06070d;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.09);
+    --accent: #4d6bff;
+    --accent2: #6a8dff;
+    --text: #ffffff;
+    --text-dim: rgba(255,255,255,0.55);
+    --text-muted: rgba(255,255,255,0.35);
+  }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── SLIDE SYSTEM ─── */
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 40px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .slide-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* ─── BACKGROUNDS & ORBS ─── */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  .orb-blue  { background: rgba(77,107,255,0.30); }
+  .orb-indigo{ background: rgba(99,102,241,0.20); }
+  .orb-purple{ background: rgba(139,92,246,0.18); }
+  .orb-teal  { background: rgba(20,184,166,0.15); }
+
+  /* ─── GRID BACKGROUND ─── */
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* ─── NAV ─── */
+  .pitch-nav {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    display: flex; align-items: center; gap: 24px;
+    padding: 10px 20px;
+    background: rgba(10,10,18,0.75);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+  .pitch-nav a {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-dim); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .pitch-nav a:hover { color: var(--text); }
+  .pitch-nav-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem; font-weight: 800;
+    letter-spacing: 0.06em; color: #fff;
+    text-transform: uppercase;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  .eyebrow {
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 18px;
+  }
+  .slide-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 900; line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+  .slide-title span { color: var(--accent2); }
+  .slide-body {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: var(--text-dim); line-height: 1.75;
+    max-width: 680px; margin: 0 auto 40px;
+  }
+  .slide-num {
+    position: absolute; top: 30px; right: 40px;
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--text-muted); letter-spacing: 0.1em;
+  }
+
+  /* ─── CARDS & GRID ─── */
+  .card-grid { display: grid; gap: 16px; margin-top: 40px; }
+  .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .card-grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: left;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+  .card:hover { border-color: rgba(77,107,255,0.4); transform: translateY(-3px); }
+  .card-icon { font-size: 2rem; margin-bottom: 14px; }
+  .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .card-desc  { font-size: 0.88rem; color: var(--text-dim); line-height: 1.6; }
+
+  /* ─── STAT CHIPS ─── */
+  .stat-row { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
+  .stat-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 28px;
+    min-width: 140px;
+  }
+  .stat-num  { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 900; color: #fff; }
+  .stat-lbl  { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.05em; }
+
+  /* ─── SLIDE 1: COVER ─── */
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(77,107,255,0.12); border: 1px solid rgba(77,107,255,0.35);
+    border-radius: 999px; padding: 7px 18px;
+    font-size: 0.78rem; font-weight: 600; color: var(--accent2);
+    margin-bottom: 28px; letter-spacing: 0.05em;
+  }
+  .cover-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent2); animation: pulse 2s infinite; }
+  .cover-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900; line-height: 1.0;
+    letter-spacing: -0.04em; margin-bottom: 28px;
+  }
+  .cover-sub { font-size: 1.2rem; color: var(--text-dim); max-width: 560px; margin: 0 auto 48px; line-height: 1.7; }
+  .cover-pills { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .pill {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px; padding: 8px 18px;
+    font-size: 0.8rem; font-weight: 500; color: var(--text-dim);
+  }
+
+  /* ─── ARCHITECTURE DIAGRAM ─── */
+  .arch-diagram {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    margin-top: 36px;
+    font-family: 'Space Grotesk', monospace;
+    text-align: left;
+  }
+  .arch-row  { display: flex; align-items: center; gap: 12px; margin: 10px 0; font-size: 0.88rem; }
+  .arch-box  { background: rgba(77,107,255,0.15); border: 1px solid rgba(77,107,255,0.35); border-radius: 8px; padding: 8px 16px; font-weight: 600; white-space: nowrap; }
+  .arch-arrow{ color: var(--accent2); font-size: 1.2rem; }
+  .arch-label{ color: var(--text-dim); font-size: 0.78rem; }
+
+  /* ─── TIMELINE ─── */
+  .timeline { display: flex; flex-direction: column; gap: 0; margin-top: 36px; text-align: left; }
+  .tl-item  { display: flex; gap: 20px; padding: 0 0 28px; position: relative; }
+  .tl-left  { display: flex; flex-direction: column; align-items: center; min-width: 36px; }
+  .tl-dot   { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .tl-dot-done   { background: var(--accent2); box-shadow: 0 0 10px rgba(106,141,255,0.5); }
+  .tl-dot-active { background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.5); animation: pulse 1.5s infinite; }
+  .tl-dot-next   { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.15); }
+  .tl-line  { width: 2px; flex: 1; background: var(--border); margin-top: 6px; }
+  .tl-tag   { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+  .tl-tag-done   { color: var(--accent2); }
+  .tl-tag-active { color: #10b981; }
+  .tl-tag-next   { color: var(--text-muted); }
+  .tl-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .tl-items { list-style: none; }
+  .tl-items li { font-size: 0.85rem; color: var(--text-dim); padding: 2px 0; }
+  .tl-items li::before { content: "→ "; color: var(--accent); }
+
+  /* ─── MARKET TABLE ─── */
+  .market-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px;
+  }
+  .market-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px 20px;
+  }
+  .market-size { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--accent2); }
+  .market-name { font-size: 0.9rem; font-weight: 700; margin: 8px 0 6px; }
+  .market-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* ─── GROWTH STRATEGY ─── */
+  .strategy-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 36px; }
+  .strategy-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px; text-align: left;
+  }
+  .strategy-num { font-family: 'Space Grotesk',sans-serif; font-size: 2.5rem; font-weight: 900; color: rgba(77,107,255,0.3); line-height: 1; margin-bottom: 12px; }
+  .strategy-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+  .strategy-desc { font-size: 0.83rem; color: var(--text-dim); line-height: 1.6; }
+
+  /* ─── TRACTION ─── */
+  .traction-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 36px; }
+  .traction-card {
+    background: linear-gradient(135deg, rgba(77,107,255,0.08), rgba(255,255,255,0.03));
+    border: 1px solid rgba(77,107,255,0.2);
+    border-radius: 16px; padding: 28px 20px;
+  }
+  .traction-num { font-family: 'Space Grotesk',sans-serif; font-size: 2.4rem; font-weight: 900; }
+  .traction-lbl { font-size: 0.82rem; color: var(--text-dim); margin-top: 6px; }
+
+  /* ─── CTA SLIDE ─── */
+  .cta-box {
+    background: linear-gradient(135deg, rgba(77,107,255,0.12), rgba(106,141,255,0.06));
+    border: 1px solid rgba(77,107,255,0.3);
+    border-radius: 24px; padding: 60px 48px; margin-top: 40px;
+  }
+  .btn-pitch {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #4d6bff, #6a8dff);
+    color: #fff; font-size: 1rem; font-weight: 700;
+    padding: 15px 32px; border-radius: 12px; text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s; margin: 8px;
+  }
+  .btn-pitch:hover { opacity: 0.9; transform: translateY(-2px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7); font-size: 1rem; font-weight: 600;
+    padding: 15px 32px; border-radius: 12px; text-decoration: none;
+    transition: all 0.2s; margin: 8px;
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+  /* ─── SLIDE PROGRESS ─── */
+  .slide-progress {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 100;
+  }
+  .sp-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .sp-dot.active { background: var(--accent2); transform: scale(1.4); }
+
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #6a8dff, #a78bfa, #6a8dff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  @media (max-width: 768px) {
+    .card-grid-3, .card-grid-2, .card-grid-4, .market-grid, .strategy-grid, .traction-grid {
+      grid-template-columns: 1fr;
+    }
+    .slide { padding: 100px 20px 60px; }
+    .pitch-nav a { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="pitch-nav">
+  <span class="pitch-nav-brand">StellarFlow</span>
+  <a href="#slide-1">Cover</a>
+  <a href="#slide-2">Problem</a>
+  <a href="#slide-3">Solution</a>
+  <a href="#slide-5">Market</a>
+  <a href="#slide-7">Roadmap</a>
+  <a href="#slide-8">CTA</a>
+</nav>
+
+<!-- PROGRESS DOTS -->
+<div class="slide-progress" id="progress"></div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 1 — COVER
+════════════════════════════════════════ -->
+<section class="slide" id="slide-1">
+  <div class="orb orb-blue"  style="width:600px;height:600px;top:-200px;left:-150px;"></div>
+  <div class="orb orb-purple" style="width:400px;height:400px;bottom:-100px;right:-100px;"></div>
+  <div class="grid-bg"></div>
+  <div class="slide-inner">
+    <div class="cover-badge"><span class="cover-badge-dot"></span>Stellar Testnet · Live Now</div>
+    <h1 class="cover-title">Stellar<span class="gradient-text">Flow</span></h1>
+    <p class="cover-sub">Non-custodial payments and on-chain crowdfunding, powered by Stellar & Soroban smart contracts.</p>
+    <div class="cover-pills">
+      <span class="pill">🔗 Soroban Smart Contracts</span>
+      <span class="pill">⚡ 5s Settlement</span>
+      <span class="pill">🔒 Non-Custodial</span>
+      <span class="pill">💸 ~$0.00001 Fees</span>
+      <span class="pill">🏆 Loyalty Tiers</span>
+    </div>
+  </div>
+  <div class="slide-num">1 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 2 — PROBLEM
+════════════════════════════════════════ -->
+<section class="slide" id="slide-2">
+  <div class="orb orb-indigo" style="width:500px;height:500px;top:-150px;right:-100px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">The Problem</div>
+    <h2 class="slide-title">Global payments are <span class="gradient-text">broken</span></h2>
+    <p class="slide-body">Sending money across borders is slow, expensive, opaque, and requires trusting a middleman with your funds. Crowdfunding platforms take 5–12% cuts, hold your money for weeks, and can freeze campaigns.</p>
+    <div class="card-grid card-grid-3">
+      <div class="card">
+        <div class="card-icon">🐌</div>
+        <div class="card-title">Slow Settlement</div>
+        <div class="card-desc">International bank wires take 3–5 business days and often fail silently.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💸</div>
+        <div class="card-title">Hidden Fees</div>
+        <div class="card-desc">$20–$50 per international transfer. 3–5% FX markups. Crowdfunding takes 5–12% cuts.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <div class="card-title">No Transparency</div>
+        <div class="card-desc">You can't verify where your money is, who holds it, or when it will settle.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">2 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 3 — SOLUTION
+════════════════════════════════════════ -->
+<section class="slide" id="slide-3">
+  <div class="orb orb-teal" style="width:500px;height:500px;bottom:-150px;left:-100px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">The Solution</div>
+    <h2 class="slide-title">Send money beyond <span class="gradient-text">borders</span></h2>
+    <p class="slide-body">StellarFlow is a non-custodial dApp that combines instant XLM payments with fully on-chain crowdfunding powered by Soroban smart contracts — no backend, no custodian, no surprises.</p>
+    <div class="card-grid card-grid-4" style="max-width:720px;margin:36px auto 0;">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Instant Finality</div>
+        <div class="card-desc">Stellar reaches consensus in ~5 seconds. Payments are final, no rollbacks.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🦋</div>
+        <div class="card-title">Freighter Wallet</div>
+        <div class="card-desc">Connect your Freighter wallet and sign every transaction locally. We never see your keys.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📜</div>
+        <div class="card-title">Soroban Contracts</div>
+        <div class="card-desc">Crowdfunding lives 100% on-chain. Funds are locked in a Rust smart contract — verifiable on the ledger.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏅</div>
+        <div class="card-title">Loyalty Tiers</div>
+        <div class="card-desc">Cross-contract DonorBadge awards Bronze / Silver / Gold tiers atomically with every donation.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">3 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 4 — ARCHITECTURE
+════════════════════════════════════════ -->
+<section class="slide" id="slide-4">
+  <div class="orb orb-blue" style="width:400px;height:400px;top:-100px;right:-80px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Architecture</div>
+    <h2 class="slide-title">Two contracts, <span class="gradient-text">one transaction</span></h2>
+    <p class="slide-body">The StellarFund and DonorBadge contracts communicate via a real cross-contract call — the donation and badge award commit atomically, in a single on-chain transaction.</p>
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box">👤 Donor Browser</div>
+        <div class="arch-arrow">──▶</div>
+        <div class="arch-box">🦋 Freighter Wallet</div>
+        <div class="arch-arrow">──▶</div>
+        <div class="arch-box">🌐 Soroban RPC</div>
+      </div>
+      <div class="arch-row" style="margin-left:40px;margin-top:16px;">
+        <div class="arch-label">Signs tx locally</div>
+        <div style="flex:1"></div>
+        <div class="arch-label">Submits XDR</div>
+      </div>
+      <div class="arch-row" style="margin-top:24px;">
+        <div class="arch-box" style="background:rgba(77,107,255,0.22);border-color:rgba(77,107,255,0.5);">📜 StellarFund Contract</div>
+        <div class="arch-arrow">──award()──▶</div>
+        <div class="arch-box" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.35);">🏅 DonorBadge Contract</div>
+      </div>
+      <div class="arch-row" style="margin-top:8px;">
+        <div class="arch-label">Records donation, emits event</div>
+        <div style="flex:1"></div>
+        <div class="arch-label">Assigns Bronze/Silver/Gold tier</div>
+      </div>
+      <div style="margin-top:20px;padding:14px 18px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;font-size:0.82rem;color:var(--text-dim);">
+        ✅ Both writes are <strong style="color:#10b981;">atomic</strong> — one transaction, one fee, one ledger close.
+        &nbsp; 📦 Built with <strong>@stellar/stellar-sdk</strong> + <strong>Rust/Soroban SDK 26</strong>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">4 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 5 — MARKET OPPORTUNITY
+════════════════════════════════════════ -->
+<section class="slide" id="slide-5">
+  <div class="orb orb-purple" style="width:500px;height:500px;top:-150px;left:-100px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Market Opportunity</div>
+    <h2 class="slide-title">A <span class="gradient-text">$1 trillion</span> market to capture</h2>
+    <p class="slide-body">Cross-border payments and decentralized crowdfunding represent two of the fastest-growing segments in fintech. Stellar is uniquely positioned at the intersection of both.</p>
+    <div class="market-grid">
+      <div class="market-card">
+        <div class="market-size">$190B</div>
+        <div class="market-name">Remittance Market</div>
+        <div class="market-desc">Global remittances in 2023. Average fee still 6.4%. Stellar can reduce this to ~$0.00001.</div>
+      </div>
+      <div class="market-card">
+        <div class="market-size">$1.8T</div>
+        <div class="market-name">Cross-Border B2B</div>
+        <div class="market-desc">B2B international payment market by 2030, growing at 7.1% CAGR.</div>
+      </div>
+      <div class="market-card">
+        <div class="market-size">$5.5B</div>
+        <div class="market-name">Crowdfunding (Web3)</div>
+        <div class="market-desc">Blockchain-based crowdfunding market expected to hit $5.5B by 2028 as smart contracts replace escrow.</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-chip"><div class="stat-num">180+</div><div class="stat-lbl">Countries reachable</div></div>
+      <div class="stat-chip"><div class="stat-num">~5s</div><div class="stat-lbl">Avg. settlement</div></div>
+      <div class="stat-chip"><div class="stat-num">$0.00001</div><div class="stat-lbl">Per transaction</div></div>
+    </div>
+  </div>
+  <div class="slide-num">5 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 6 — TRACTION
+════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="orb orb-blue" style="width:450px;height:450px;bottom:-150px;right:-80px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Traction & Proof</div>
+    <h2 class="slide-title">Live product, <span class="gradient-text">real users</span></h2>
+    <p class="slide-body">StellarFlow is deployed on Stellar Testnet with a live Soroban smart contract, real Freighter wallet integration, and active testnet users.</p>
+    <div class="traction-grid">
+      <div class="traction-card">
+        <div class="traction-num gradient-text">50+</div>
+        <div class="traction-lbl">Testnet users onboarded</div>
+      </div>
+      <div class="traction-card">
+        <div class="traction-num gradient-text">30+</div>
+        <div class="traction-lbl">Meaningful git commits</div>
+      </div>
+      <div class="traction-card">
+        <div class="traction-num gradient-text">11</div>
+        <div class="traction-lbl">Smart contract unit tests</div>
+      </div>
+      <div class="traction-card">
+        <div class="traction-num gradient-text">2</div>
+        <div class="traction-lbl">Live Soroban contracts</div>
+      </div>
+      <div class="traction-card">
+        <div class="traction-num gradient-text">100%</div>
+        <div class="traction-lbl">CI/CD coverage (GitHub Actions)</div>
+      </div>
+      <div class="traction-card">
+        <div class="traction-num gradient-text">Live</div>
+        <div class="traction-lbl">Deployed on Vercel</div>
+      </div>
+    </div>
+    <div style="margin-top:28px;font-size:0.82rem;color:var(--text-muted);">
+      🔗 Live at: <a href="https://stellar-connect-wallet-rr5q.vercel.app/" target="_blank" style="color:var(--accent2);text-decoration:none;">stellar-connect-wallet-rr5q.vercel.app</a>
+      &nbsp; · &nbsp;
+      Contract: <a href="https://stellar.expert/explorer/testnet/contract/CCIYIE3WDF5EEC4DL25JR2O4SAV2G3USARIBMCLWPIFQVUOIVDEN5FWI" target="_blank" style="color:var(--accent2);text-decoration:none;font-family:monospace;font-size:0.75rem;">CCIYIE3W…</a>
+    </div>
+  </div>
+  <div class="slide-num">6 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 7 — GROWTH & ROADMAP
+════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="orb orb-teal" style="width:500px;height:500px;top:-100px;left:-150px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Growth Strategy & Roadmap</div>
+    <h2 class="slide-title">How we <span class="gradient-text">scale</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:36px;text-align:left;">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:20px;color:var(--accent2);">Growth Strategy</h3>
+        <div class="strategy-grid" style="grid-template-columns:1fr;">
+          <div class="strategy-card">
+            <div class="strategy-num">01</div>
+            <div class="strategy-title">Stellar Ecosystem</div>
+            <div class="strategy-desc">Submit to Stellar Community Fund. Build presence in Stellar Discord, developer forums, and hackathons.</div>
+          </div>
+          <div class="strategy-card">
+            <div class="strategy-num">02</div>
+            <div class="strategy-title">Developer-Led Growth</div>
+            <div class="strategy-desc">Open-source first. Ship blog posts and tutorials on Soroban contracts to attract builders.</div>
+          </div>
+          <div class="strategy-card">
+            <div class="strategy-num">03</div>
+            <div class="strategy-title">Referral + Loyalty</div>
+            <div class="strategy-desc">DonorBadge tiers create sticky retention. Add referral bonuses and leaderboards in Phase 2.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:20px;color:var(--accent2);">Future Roadmap</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot tl-dot-done"></div><div class="tl-line"></div></div>
+            <div><div class="tl-tag tl-tag-done">✓ Shipped</div><div class="tl-title">Payments & Wallet</div><ul class="tl-items"><li>Freighter connect, send XLM, live balance</li></ul></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot tl-dot-done"></div><div class="tl-line"></div></div>
+            <div><div class="tl-tag tl-tag-done">✓ Shipped</div><div class="tl-title">Soroban Crowdfunding</div><ul class="tl-items"><li>StellarFund + DonorBadge contracts live</li></ul></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot tl-dot-active"></div><div class="tl-line"></div></div>
+            <div><div class="tl-tag tl-tag-active">● Now — Level 5</div><div class="tl-title">User Growth & Analytics</div><ul class="tl-items"><li>50+ testnet users, analytics dashboard</li><li>Onboarding flow, feedback collection</li></ul></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot tl-dot-next"></div></div>
+            <div><div class="tl-tag tl-tag-next">Planned</div><div class="tl-title">Mainnet & Multi-Asset</div><ul class="tl-items"><li>Mainnet deployment, USDC support</li><li>Campaign creation UI, DAO governance</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">7 / 8</div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 8 — CALL TO ACTION
+════════════════════════════════════════ -->
+<section class="slide" id="slide-8">
+  <div class="orb orb-blue"  style="width:600px;height:600px;top:-200px;right:-150px;"></div>
+  <div class="orb orb-purple" style="width:400px;height:400px;bottom:-100px;left:-100px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Join StellarFlow</div>
+    <h2 class="slide-title">The future of payments is <span class="gradient-text">open</span></h2>
+    <div class="cta-box">
+      <p style="font-size:1.15rem;color:var(--text-dim);margin-bottom:32px;line-height:1.7;">
+        StellarFlow is live on Stellar Testnet. Connect your Freighter wallet, experience 5-second settlement, and donate to the on-chain crowdfunding campaign — all without giving up custody of your keys.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://stellar-connect-wallet-rr5q.vercel.app/" target="_blank" class="btn-pitch">🚀 Try the Live App</a>
+        <a href="https://github.com/amankoli09/Stellar-Connect-Wallet" target="_blank" class="btn-outline">📂 View on GitHub</a>
+        <a href="https://youtu.be/8IG4hLKOBYI" target="_blank" class="btn-outline">▶️ Watch Demo</a>
+      </div>
+      <div style="margin-top:36px;display:flex;gap:32px;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:900;color:var(--accent2);">50+</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);">Beta Users</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:900;color:var(--accent2);">2</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);">Live Contracts</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:900;color:var(--accent2);">30+</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);">Commits</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:900;color:var(--accent2);">MIT</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);">Open Source</div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:24px;font-size:0.78rem;color:var(--text-muted);">
+      Built for the Stellar Developer Track · Soroban Smart Contracts · Freighter Wallet
+    </p>
+  </div>
+  <div class="slide-num">8 / 8</div>
+</section>
+
+<script>
+  // Build progress dots
+  const slides = document.querySelectorAll('.slide');
+  const prog   = document.getElementById('progress');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'sp-dot';
+    d.addEventListener('click', () => slides[i].scrollIntoView({ behavior: 'smooth' }));
+    prog.appendChild(d);
+  });
+
+  // Update active dot on scroll
+  const dots = prog.querySelectorAll('.sp-dot');
+  const obs  = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const idx = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => obs.observe(s));
+  dots[0].classList.add('active');
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    const current = Array.from(dots).findIndex(d => d.classList.contains('active'));
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      if (current < slides.length - 1) slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      if (current > 0) slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+</body>
+</html>

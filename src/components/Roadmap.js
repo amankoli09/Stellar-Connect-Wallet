@@ -12,18 +12,25 @@ const PHASES = [
         items: ["StellarFund Soroban contract", "Real donations & events", "Live progress feed"],
     },
     {
-        status: "active",
-        tag: "In progress",
+        status: "done",
+        tag: "Shipped",
         title: "Inter-contract loyalty",
         items: ["DonorBadge contract", "Cross-contract awards", "Bronze / Silver / Gold tiers"],
+    },
+    {
+        status: "active",
+        tag: "In progress",
+        title: "Scale & Ecosystem",
+        items: ["50+ testnet users onboarded", "Analytics dashboard", "User feedback iteration", "Pitch deck & demo"],
     },
     {
         status: "next",
         tag: "Planned",
         title: "Mainnet & beyond",
-        items: ["Mainnet deployment", "Multi-asset support", "Campaign creation UI"],
+        items: ["Mainnet deployment", "USDC & multi-asset support", "Campaign creation UI", "DAO governance"],
     },
 ];
+
 
 /* Product roadmap timeline — communicates momentum and where the project is headed. */
 export default function Roadmap() {
