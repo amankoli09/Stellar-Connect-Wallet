@@ -1,4 +1,5 @@
-<img width="1672" height="941" alt="ChatGPT Image Jun 21, 2026, 09_50_07 PM" src="https://github.com/user-attachments/assets/8032d713-fcc5-44df-9eb8-0ff42c234a3d" />
+<img width="1536" height="1024" alt="ChatGPT Image Jun 30, 2026, 03_34_40 PM" src="https://github.com/user-attachments/assets/11869c52-53f1-4ff3-b174-3578aaadd3a5" />
+
 
 <h3 align="center">A Soroban smart contract for on-chain crowdfunding, with a non-custodial React dApp + Freighter wallet front-end on the Stellar Testnet</h3>
 
