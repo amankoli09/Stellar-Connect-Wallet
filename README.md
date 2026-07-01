@@ -198,19 +198,22 @@ Every push and pull request to `main` runs **[GitHub Actions](.github/workflows/
 ### 🔌 Wallet Connected — Dashboard View
 > Balance displayed, wallet address shown, Recent Activity panel ready
 
-<img width="1466" height="741" alt="Screenshot 2026-06-21 at 9 22 46 PM" src="https://github.com/user-attachments/assets/519d97b6-a4e6-4276-bbc8-37d745d2920d" />
+<img width="1466" height="739" alt="Screenshot 2026-07-01 at 3 40 04 PM" src="https://github.com/user-attachments/assets/8993c1b0-76bf-43f5-b0fe-df938551c60b" />
+
 
 
 ### 📤 Sending XLM — Transfer Panel
 > Recipient address input with Stellar format validation, amount field, Process Transfer button
 
-<img width="1466" height="741" alt="Screenshot 2026-06-21 at 9 23 52 PM" src="https://github.com/user-attachments/assets/af6a1436-2fe1-4572-86ef-1150fb049714" />
+<img width="1466" height="739" alt="Screenshot 2026-07-01 at 3 40 30 PM" src="https://github.com/user-attachments/assets/b18c27a6-5730-4de8-8f0b-902f6555cf5e" />
+
 
 
 ### ✅ Successful Testnet Transaction
 > Green "Transaction confirmed" badge with the on-chain transaction hash
 
-<img width="714" height="239" alt="Confirmed transaction" src="https://github.com/user-attachments/assets/8d9ec35e-1573-41a0-929c-a94d83d4e309" />
+<img width="1466" height="739" alt="Screenshot 2026-07-01 at 3 40 48 PM" src="https://github.com/user-attachments/assets/d14978c1-d8bd-47b7-8ec4-d412e1e17ccc" />
+
 
 ---
 
