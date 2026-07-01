@@ -2,8 +2,8 @@ import { useState } from "react";
 
 const FAQS = [
     {
-        q: "Is StellarFlow custodial? Who holds my funds?",
-        a: "Never us. StellarFlow is fully non-custodial — your keys live in your Freighter wallet and you sign every transaction yourself. We never touch, hold, or move your funds.",
+        q: "Is LynxX custodial? Who holds my funds?",
+        a: "Never us. LynxX is fully non-custodial — your keys live in your Freighter wallet and you sign every transaction yourself. We never touch, hold, or move your funds.",
     },
     {
         q: "What does it cost to send a payment?",
@@ -19,7 +19,7 @@ const FAQS = [
     },
     {
         q: "Do I need real money to try it?",
-        a: "No. StellarFlow runs on Stellar Testnet, so you use free test XLM. Just create a wallet in Freighter, switch to Testnet, and fund it from the friendbot.",
+        a: "No. LynxX runs on Stellar Testnet, so you use free test XLM. Just create a wallet in Freighter, switch to Testnet, and fund it from the friendbot.",
     },
 ];
 

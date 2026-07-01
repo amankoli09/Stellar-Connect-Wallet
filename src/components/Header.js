@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react";
+import { 
+    Home, Send as SendIconLucide, Download, RefreshCw, Clock, Users, BarChart2, 
+    Settings, ExternalLink, ArrowRight, Bell, LogOut, ChevronDown, ChevronRight, Eye, EyeOff, 
+    Copy as CopyIcon, QrCode, CreditCard, Layers, ArrowUpRight, ArrowDownLeft 
+} from "lucide-react";
 import LightRays from "./LightRays";
 import Terminal from "./Terminal";
 import Crowdfund from "./Crowdfund";
@@ -12,8 +17,10 @@ import MagicRings from "./MagicRings";
 import Analytics from "./Analytics";
 import OnboardingModal, { shouldShowOnboarding } from "./OnboardingModal";
 import coinsImg from "../media/landphoto.png";
-import logoImg from "../media/logo.png";
-import { connectWallet, fetchBalance, sendPayment } from "./Freighter";
+import logoImg from "../media/LynxX.png";
+import earthImg from "../media/earth.png";
+import { connectWallet, fetchBalance, sendPayment } from "./Wallet";
+import MarketAnalytics from "./MarketAnalytics";
 
 /* ── SVG Icons ── */
 const SendIcon = () => (
@@ -95,6 +102,13 @@ function Header() {
     const [walletPrompt, setWalletPrompt] = useState(null); // { title, message, showInstall }
     const [coinsOk, setCoinsOk]           = useState(true);  // hero coins image present?
     const [showOnboarding, setShowOnboarding] = useState(false); // first-visit guide
+    const [activeView, setActiveView] = useState("home"); // "home" | "analytics"
+    const [toast, setToast] = useState(null);
+
+    const showToast = (message, type = 'error') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
 
     // Sticky-nav: add a solid background once the user scrolls past the hero top.
     useEffect(() => {
@@ -152,11 +166,11 @@ function Header() {
     };
 
     const handleSend = async () => {
-        if (!recipient || !amount) { alert("Please fill in recipient and amount"); return; }
+        if (!recipient || !amount) { showToast("Please fill in recipient and amount"); return; }
 
         // Basic Stellar address validation
         if (!recipient.startsWith("G") || recipient.length !== 56) {
-            alert(`Invalid Stellar address.\nAddresses must start with G and be exactly 56 characters.\nYours is ${recipient.length} characters.`);
+            showToast(`Invalid Stellar address.`);
             return;
         }
 
@@ -173,10 +187,11 @@ function Header() {
             setRecipient(""); setAmount("");
             const bal = await fetchBalance(address);
             setBalance(Number(bal).toFixed(2));
+            showToast("Transaction successful!", "success");
         } catch (e) {
             console.error(e);
             setStatus("error");
-            setErrorMsg(e?.message || "Transaction failed. Please try again.");
+            showToast(e?.message || "Transaction failed. Please try again.", "error");
         } finally { setIsSending(false); }
     };
 
@@ -254,26 +269,28 @@ function Header() {
                 {/* In-panel nav */}
                 <nav className={`cf-nav ${scrolled ? "cf-nav-scrolled" : ""}`}>
                     <div className="cf-nav-brand">
-                        <img className="cf-nav-logo" src={logoImg} alt="StellarFlow logo" />
-                        <span className="cf-nav-wordmark">StellarFlow</span>
+                        <img className="cf-nav-logo" src={logoImg} alt="LynxX logo" onClick={() => setActiveView('home')} style={{cursor: 'pointer'}} />
                     </div>
                     <div className="cf-nav-pill">
-                        <span className="cf-nav-link cf-nav-active" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</span>
-                        <span className="cf-nav-link" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>Features</span>
-                        <span className="cf-nav-link" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>How it works</span>
-                        <span className="cf-nav-link" onClick={() => document.getElementById('campaign')?.scrollIntoView({ behavior: 'smooth' })}>Crowdfund</span>
-                        <span className="cf-nav-link" onClick={() => document.getElementById('analytics')?.scrollIntoView({ behavior: 'smooth' })}>Analytics</span>
-                        <span className="cf-nav-link" onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>FAQ</span>
+                        <span className={`cf-nav-link ${activeView === 'home' ? 'cf-nav-active' : ''}`} onClick={() => { setActiveView('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Home</span>
+                        <span className="cf-nav-link" onClick={() => { setActiveView('home'); setTimeout(() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }), 50); }}>Features</span>
+                        <span className="cf-nav-link" onClick={() => { setActiveView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 50); }}>How it works</span>
+                        <span className="cf-nav-link" onClick={() => { setActiveView('home'); setTimeout(() => document.getElementById('campaign')?.scrollIntoView({ behavior: 'smooth' }), 50); }}>Crowdfund</span>
+                        <span className={`cf-nav-link ${activeView === 'analytics' ? 'cf-nav-active' : ''}`} onClick={() => { setActiveView('analytics'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Analytics</span>
+                        <span className="cf-nav-link" onClick={() => { setActiveView('home'); setTimeout(() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' }), 50); }}>FAQ</span>
                     </div>
                     <button id="btn-connect-nav" className="cf-nav-cta" onClick={handleConnect} disabled={isConnecting}>
                         {isConnecting ? <><span className="spinner"></span> Connecting…</> : "Connect Wallet"}
                     </button>
                 </nav>
 
-                {/* Hero — copy left, lit coins right */}
-                <div className="cf-hero">
-                    <div className="cf-hero-copy">
-                        <div className="hero-eyebrow">[ Live on Stellar Testnet ]</div>
+                {activeView === 'analytics' ? (
+                    <MarketAnalytics />
+                ) : (
+                    <>
+                    <div className="cf-hero">
+                        <div className="cf-hero-copy">
+                            <div className="hero-eyebrow">[ Live on Stellar Testnet ]</div>
                         <h1 className="hero-h1">
                             Send money<br />
                             Beyond Borders
@@ -302,7 +319,7 @@ function Header() {
                                     <span className="app-preview-dot ap-red" />
                                     <span className="app-preview-dot ap-yellow" />
                                     <span className="app-preview-dot ap-green" />
-                                    <span className="app-preview-url">app.stellarflow.xyz</span>
+                                    <span className="app-preview-url">app.lynxx.xyz</span>
                                 </div>
                                 <div className="app-preview-body">
                                     <div className="ap-balance">
@@ -344,19 +361,23 @@ function Header() {
                         </div>
                     </div>
                 </div>
+                </>
+                )}
             </section>
 
-            {/* ── Features (bento) ── */}
-            <section className="lp-features" id="features">
+            {activeView === 'home' && (
+                <>
+                {/* ── Features (bento) ── */}
+                <section className="lp-features" id="features">
                 <div className="lp-section-inner">
                     <Reveal className="cf-sec-head">
                         <div className="cf-sec-head-left">
-                            <div className="hero-eyebrow">[ Why StellarFlow? ]</div>
+                            <div className="hero-eyebrow">[ Why LynxX? ]</div>
                             <h2 className="lp-section-title">Everything you need<br />to move money fast</h2>
                         </div>
                         <div className="cf-sec-head-right">
                             <p className="cf-sec-head-text">
-                                StellarFlow merges fast, non-custodial payments with real on-chain
+                                LynxX merges fast, non-custodial payments with real on-chain
                                 smart contracts — unlocking trustless transfers and crowdfunding on Stellar.
                             </p>
                         </div>
@@ -505,7 +526,7 @@ function Header() {
                 <div className="lp-section-inner">
                     <Reveal>
                         <div className="lp-section-eyebrow">Roadmap</div>
-                        <h2 className="lp-section-title">Where StellarFlow is headed</h2>
+                        <h2 className="lp-section-title">Where LynxX is headed</h2>
                     </Reveal>
                     <Reveal delay={120}><Roadmap /></Reveal>
                 </div>
@@ -561,7 +582,7 @@ function Header() {
                     <Reveal className="lp-feedback-head">
                         <div className="lp-section-eyebrow">Community</div>
                         <h2 className="lp-section-title">Join 50+ beta testers</h2>
-                        <p className="lp-faq-sub">Share your wallet address and feedback to help shape StellarFlow. Your input directly drives our next features.</p>
+                        <p className="lp-faq-sub">Share your wallet address and feedback to help shape LynxX. Your input directly drives our next features.</p>
                     </Reveal>
                     <Reveal delay={120}>
                         <div className="feedback-panel">
@@ -617,14 +638,15 @@ function Header() {
                     </button>
                 </Reveal>
             </section>
+            </>
+            )}
 
             {/* ── Footer ── */}
             <footer className="lp-footer">
                 <div className="lp-footer-top">
                     <div className="lp-footer-brand-col">
                         <div className="lp-footer-brand">
-                            <img className="cf-nav-logo" src={logoImg} alt="StellarFlow logo" />
-                            <span className="lp-nav-wordmark" style={{ fontSize: '1rem' }}>StellarFlow</span>
+                            <img className="cf-nav-logo" src={logoImg} alt="LynxX logo" />
                         </div>
                         <p className="lp-footer-tagline">Non-custodial payments &amp; on-chain crowdfunding, built on Stellar.</p>
                         <div className="lp-footer-socials">
@@ -648,12 +670,12 @@ function Header() {
                         <div className="lp-footer-col">
                             <span className="lp-footer-col-title">Get started</span>
                             <span className="lp-footer-link" onClick={handleConnect}>Connect wallet</span>
-                            <span className="lp-footer-link" onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>FAQ</span>
+                            <span className="lp-footer-link" onClick={() => { setActiveView('home'); setTimeout(() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' }), 50); }}>FAQ</span>
                         </div>
                     </div>
                 </div>
                 <div className="lp-footer-bottom">
-                    <span className="lp-footer-text">© 2026 StellarFlow — built on Stellar Testnet for demonstration purposes.</span>
+                    <span className="lp-footer-text">© 2026 LynxX — built on Stellar Testnet for demonstration purposes.</span>
                     <span className="lp-footer-text">Made with Soroban &amp; React</span>
                 </div>
             </footer>
@@ -661,123 +683,330 @@ function Header() {
     );
 
     /* ════════════════════
-       DASHBOARD
+       BENTO DASHBOARD
     ════════════════════ */
     return (
-        <div className="dashboard-page">
-            <nav className="dash-nav">
-                <div className="dash-nav-brand">
-                    <span
-                        className="dash-nav-wordmark"
+        <div className="bento-dashboard-page">
+            {/* Sidebar */}
+            <aside className="bento-sidebar">
+                <div className="bento-logo">
+                    <img 
+                        src={logoImg} 
+                        alt="LynxX logo" 
                         onClick={handleDisconnect}
-                        style={{ cursor: 'pointer' }}
-                        title="Back to home"
-                    >StellarFlow</span>
+                        style={{ cursor: 'pointer', height: '36px' }}
+                    />
                 </div>
-                <div className="dash-nav-right">
-                    <span className="dash-nav-badge">Testnet</span>
-                    <button id="btn-disconnect" className="btn btn-danger-soft" style={{ width: "auto", padding: "8px 16px", fontSize: "0.8rem" }} onClick={handleDisconnect}>
-                        <LogoutIcon /> Disconnect
-                    </button>
-                </div>
-            </nav>
-
-            <div className="dash-body">
-                {/* ── LEFT ── */}
-                <div className="dash-left">
-                    <div className="balance-card-wrap">
-                        <div className="balance-card">
-                            <div className="balance-card-label">Balance</div>
-                            <div className="balance-card-amount">
-                                <span className="balance-card-currency">XLM</span>
-                                <span className="balance-card-number">{balance}</span>
-                            </div>
-                            <div className="balance-card-dots">{short(address)}</div>
-                        </div>
+                <nav className="bento-nav">
+                    <a href="#" className="bento-nav-item active" onClick={e => e.preventDefault()}><Home size={20} /> Dashboard</a>
+                    <a href="#" className="bento-nav-item" onClick={e => e.preventDefault()}><SendIconLucide size={20} /> Send</a>
+                    <a href="#" className="bento-nav-item" onClick={e => e.preventDefault()}><Download size={20} /> Receive</a>
+                    <a href="#" className="bento-nav-item" onClick={e => e.preventDefault()}><RefreshCw size={20} /> Swap</a>
+                    <a href="#" className="bento-nav-item" onClick={e => e.preventDefault()}><Clock size={20} /> Activity</a>
+                    <a href="#" className="bento-nav-item" onClick={e => e.preventDefault()}><Users size={20} /> Contacts</a>
+                    <a href="#" className="bento-nav-item" onClick={() => setActiveView('analytics')}><BarChart2 size={20} /> Analytics</a>
+                    <a href="#" className="bento-nav-item" onClick={e => e.preventDefault()}><Settings size={20} /> Settings</a>
+                </nav>
+                
+                <div className="bento-sidebar-bottom">
+                    <div className="bento-network-badge">
+                        <span className="bento-dot"></span> Testnet Connected
                     </div>
-
-                    <div className="dash-tile">
-                        <div className="dash-tile-label">Wallet Address</div>
-                        <div className="dash-tile-value">{address.slice(0,14)}...{address.slice(-10)}</div>
+                    <div className="bento-address-pill">
+                        <span>{address.slice(0, 6)}...{address.slice(-5)}</span> <ExternalLink size={14} />
                     </div>
-
-                    <div className="activity-card">
-                        <div className="activity-head">
-                            <span className="activity-head-title">Recent Activity</span>
-                        </div>
-                        {txHistory.length > 0 ? txHistory.map((tx, i) => (
-                            <div className="activity-item" key={i}>
-                                <div className="activity-item-left">
-                                    <span className="activity-item-name">Transfer</span>
-                                    <span className="activity-item-date">{tx.date}</span>
-                                </div>
-                                <span className="activity-item-amount debit">- {tx.amount} XLM</span>
-                            </div>
-                        )) : (
-                            <p className="activity-empty">No transactions yet</p>
-                        )}
+                    <div className="bento-help-card">
+                        <h5>Need Help?</h5>
+                        <p>Visit our docs or get support from our team.</p>
+                        <ArrowRight size={16} />
                     </div>
                 </div>
+            </aside>
 
-                {/* ── RIGHT ── */}
-                <div className="dash-right">
-                    <div className="send-panel">
-                        <div className="send-panel-title">Transfer XLM</div>
-                        <div className="send-panel-sub">Send to any Stellar address on the Testnet</div>
-
-                        <div className="send-field">
-                            <label>Recipient Address</label>
-                            <div className="send-input-wrap">
-                                <input id="input-recipient" type="text" placeholder="G... full Stellar address"
-                                    value={recipient}
-                                    onChange={e => setRecipient(e.target.value.trim())}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="send-field">
-                            <label>Amount</label>
-                            <div className="send-input-wrap">
-                                <span className="send-input-prefix">XLM</span>
-                                <input id="input-amount" type="number" placeholder="0.00"
-                                    value={amount} onChange={e => setAmount(e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="send-field">
-                            <label>Description (optional)</label>
-                            <div className="send-input-wrap">
-                                <input type="text" placeholder="Payment for..." />
-                            </div>
-                        </div>
-
-                        <button id="btn-send" className="btn btn-gradient btn-full" onClick={handleSend} disabled={isSending}>
-                            {isSending ? <><span className="spinner"></span> Sending...</> : <><SendIcon /> Process Transfer</>}
+            {/* Main Content Area */}
+            <main className="bento-main">
+                {/* Top Header */}
+                <header className="bento-header">
+                    <div className="bento-header-left"></div>
+                    <div className="bento-header-right">
+                        <Bell size={20} className="bento-icon-btn" />
+                        <button className="bento-btn-outline" onClick={handleDisconnect}>
+                            <LogOut size={16} /> Disconnect
                         </button>
+                        <div className="bento-avatar-pill">
+                            <div className="bento-avatar gradient-1"></div>
+                            {address.slice(0, 6)}...{address.slice(-5)} <ChevronDown size={16} />
+                        </div>
+                    </div>
+                </header>
+
+                {/* Dashboard Grid */}
+                <div className="bento-grid">
+                    {/* Column 1 */}
+                    <div className="bento-col bento-col-1">
+                        {/* Total Balance */}
+                        <div className="bento-card bento-balance-card">
+                            <div className="bento-card-header">
+                                Total Balance <Eye size={16} className="text-muted" /> <EyeOff size={16} className="text-muted" />
+                            </div>
+                            <div className="bento-balance-amount">{balance} <span>XLM</span></div>
+                            <div className="bento-balance-usd">≈ ${(balance * 0.328).toFixed(2)} USD</div>
+                            
+                            {/* Mock Sparkline */}
+                            <div className="bento-sparkline">
+                                <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="rgba(77,107,255,0.4)" />
+                                            <stop offset="100%" stopColor="rgba(77,107,255,0)" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M0,35 C10,25 20,40 30,20 C40,0 50,25 60,10 C70,0 80,20 90,5 L100,0 L100,40 L0,40 Z" fill="url(#sparklineGrad)" />
+                                    <path d="M0,35 C10,25 20,40 30,20 C40,0 50,25 60,10 C70,0 80,20 90,5 L100,0" fill="none" stroke="#4d6bff" strokeWidth="2.5" />
+                                </svg>
+                            </div>
+                            <div className="bento-timeframes">
+                                <span className="active">1D</span><span>7D</span><span>30D</span><span>1Y</span><span>All</span>
+                            </div>
+                        </div>
+
+                        {/* Wallet Address */}
+                        <div className="bento-card bento-address-card">
+                            <div className="bento-card-title mb-12">Wallet Address</div>
+                            <div className="bento-address-box">
+                                {address.slice(0, 14)}...{address.slice(-10)} <CopyIcon size={16} />
+                            </div>
+                            <div className="bento-address-actions">
+                                <button><CopyIcon size={14} /> Copy</button>
+                                <button><QrCode size={14} /> QR Code</button>
+                                <button><ExternalLink size={14} /> View on Explorer</button>
+                            </div>
+                        </div>
+
+                        {/* Recent Activity */}
+                        <div className="bento-card bento-activity-card">
+                            <div className="bento-card-header mb-16">
+                                <span className="bento-card-title">Recent Activity</span>
+                                <a href="#" className="bento-view-all">View All</a>
+                            </div>
+                            <div className="bento-activity-list">
+                                {txHistory.length > 0 ? txHistory.map((tx, i) => (
+                                    <div className="bento-activity-item" key={i}>
+                                        <div className="bento-act-icon red"><ArrowUpRight size={16} /></div>
+                                        <div className="bento-act-info">
+                                            <div className="bento-act-title">Sent</div>
+                                            <div className="bento-act-sub">To {tx.recipient ? short(tx.recipient) : "Stellar address"}</div>
+                                        </div>
+                                        <div className="bento-act-amount negative">- {tx.amount} XLM<br/><span>{tx.date}</span></div>
+                                    </div>
+                                )) : (
+                                    <>
+                                        <div className="bento-activity-item">
+                                            <div className="bento-act-icon green"><ArrowDownLeft size={16} /></div>
+                                            <div className="bento-act-info">
+                                                <div className="bento-act-title">Received</div>
+                                                <div className="bento-act-sub">From GDZ5...F3T2</div>
+                                            </div>
+                                            <div className="bento-act-amount positive">+120.50 XLM<br/><span>2m ago</span></div>
+                                        </div>
+                                        <div className="bento-activity-item">
+                                            <div className="bento-act-icon purple"><RefreshCw size={16} /></div>
+                                            <div className="bento-act-info">
+                                                <div className="bento-act-title">Swap</div>
+                                                <div className="bento-act-sub">XLM → USDC</div>
+                                            </div>
+                                            <div className="bento-act-amount positive">+24.32 USDC<br/><span>3h ago</span></div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    {status && (
-                        <div className="status-panel">
-                            <div className="status-panel-title">Transaction Status</div>
-                            <div className={`status-badge ${statusMeta[status].cls}`}>
-                                <span className="status-dot"></span>
-                                {statusMeta[status].icon}
-                                {statusMeta[status].text}
+                    {/* Column 2 */}
+                    <div className="bento-col bento-col-2">
+                        {/* Quick Actions Row */}
+                        <div className="bento-quick-actions">
+                            <div className="bento-qa-item"><div className="bento-qa-icon blue"><SendIconLucide size={20} /></div> Send</div>
+                            <div className="bento-qa-item"><div className="bento-qa-icon outline"><Download size={20} /></div> Receive</div>
+                            <div className="bento-qa-item"><div className="bento-qa-icon outline"><RefreshCw size={20} /></div> Swap</div>
+                            <div className="bento-qa-item"><div className="bento-qa-icon outline"><CreditCard size={20} /></div> Buy</div>
+                            <div className="bento-qa-item"><div className="bento-qa-icon outline"><Layers size={20} /></div> Stake</div>
+                        </div>
+
+                        {/* Send XLM Card */}
+                        <div className="bento-card bento-send-card">
+                            <div className="bento-card-header">
+                                <span className="bento-card-title">Send XLM</span>
+                                <span className="bento-card-sub text-muted">Recent <ChevronDown size={14} /></span>
                             </div>
-                            {hash && (
-                                <div className="tx-hash-box">
-                                    <div className="tx-hash-label">Transaction Hash</div>
-                                    <div className="tx-hash-value">{hash}</div>
+                            <div className="bento-card-desc mb-16 text-muted" style={{fontSize: '0.85rem'}}>Send to any Stellar address on the Testnet</div>
+                            
+                            <div className="bento-recent-contact mb-20">
+                                <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=GDZ5" alt="avatar" className="bento-contact-avatar" />
+                                <div className="bento-contact-info">
+                                    <div className="bento-contact-name">GDZ5...F3T2 <span className="badge">Friend</span></div>
+                                    <div className="bento-contact-sub">GDonald | @gdwx.test</div>
+                                </div>
+                                <ChevronRight size={16} className="text-muted" />
+                            </div>
+
+                            <div className="send-field mb-16">
+                                <label>Recipient Address</label>
+                                <div className="send-input-wrap">
+                                    <input id="input-recipient" type="text" placeholder="G... full Stellar address"
+                                        value={recipient}
+                                        onChange={e => setRecipient(e.target.value.trim())}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="send-field mb-16">
+                                <label>Amount</label>
+                                <div className="send-input-wrap amount-wrap">
+                                    <span className="bento-pill-prefix">XLM</span>
+                                    <input id="input-amount" type="number" placeholder="0.00"
+                                        value={amount} onChange={e => setAmount(e.target.value)}
+                                    />
+                                    <span className="bento-usd-suffix">≈ ${(amount * 0.328).toFixed(2)} USD</span>
+                                </div>
+                            </div>
+
+                            <div className="send-field mb-20">
+                                <label>Memo (optional)</label>
+                                <div className="send-input-wrap">
+                                    <input type="text" placeholder="What's this for?" />
+                                </div>
+                            </div>
+
+                            <button id="btn-send" className="btn btn-primary bento-submit-btn" onClick={handleSend} disabled={isSending}>
+                                {isSending ? <><span className="spinner"></span> Sending...</> : <>Review Transfer <ArrowRight size={16} /></>}
+                            </button>
+
+                            {status && (
+                                <div className="status-panel mt-16">
+                                    <div className={`status-badge ${statusMeta[status].cls}`}>
+                                        <span className="status-dot"></span>
+                                        {statusMeta[status].icon}
+                                        {statusMeta[status].text}
+                                    </div>
+                                    {hash && (
+                                        <div className="tx-hash-box mt-8">
+                                            <div className="tx-hash-label">Transaction Hash</div>
+                                            <div className="tx-hash-value" style={{fontSize: '0.75rem'}}>{hash}</div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
-                    )}
 
-                    {/* On-chain crowdfunding via the deployed Soroban contract */}
-                    <Crowdfund address={address} onDonated={refreshBalance} />
+                        {/* Portfolio Card */}
+                        <div className="bento-card bento-portfolio-card">
+                            <div className="bento-card-title mb-16">Portfolio</div>
+                            <div className="bento-portfolio-body">
+                                <div className="bento-donut-wrap">
+                                    <div className="bento-donut-chart">
+                                        <div className="bento-donut-inner">
+                                            <span className="amount">{balance}</span>
+                                            <span className="label">XLM<br/>Total</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bento-portfolio-legend">
+                                    <div className="legend-row"><span className="dot xlm"></span> <span className="name">XLM</span> <span className="pct">100%</span> <span className="val">{balance}</span></div>
+                                    <div className="legend-row"><span className="dot usdc"></span> <span className="name">USDC</span> <span className="pct">0%</span> <span className="val">0.00</span></div>
+                                    <div className="legend-row"><span className="dot other"></span> <span className="name">Other Assets</span> <span className="pct">0%</span> <span className="val">0.00</span></div>
+                                </div>
+                            </div>
+                            <button className="bento-btn-full mt-16">Manage Assets</button>
+                        </div>
+                    </div>
+
+                    {/* Column 3 */}
+                    <div className="bento-col bento-col-3">
+                        {/* Campaigns */}
+                        <div className="bento-campaigns-header">
+                            <span className="bento-card-title">Campaigns</span>
+                            <a href="#" className="bento-view-all">View All</a>
+                        </div>
+                        <div className="bento-card bento-crowdfund-card" style={{ backgroundImage: `url(${earthImg})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                            <div className="bento-cf-overlay"></div>
+                            <div className="bento-cf-content">
+                                <div className="bento-cf-badge"><span className="bento-dot green"></span> LIVE</div>
+                                <h3>Back the campaign, on-chain</h3>
+                                
+                                <div className="bento-cf-stats mt-16">
+                                    <div className="flex-between mb-8">
+                                        <span className="cf-amt"><strong>20</strong> XLM</span>
+                                        <span className="cf-goal text-muted">of 1,000 XLM goal</span>
+                                    </div>
+                                    <div className="cf-progress-bar"><div className="cf-progress-fill" style={{width: '2%'}}></div></div>
+                                    <div className="flex-between mt-8 text-muted" style={{fontSize: '0.8rem'}}>
+                                        <span>2.0% funded</span>
+                                        <span>3 donors</span>
+                                    </div>
+                                </div>
+
+                                <button className="btn btn-primary bento-submit-btn mt-20" style={{background: 'linear-gradient(90deg, #4d6bff, #8a2be2)'}}>Donate</button>
+                                <div className="text-center mt-12 text-muted" style={{fontSize: '0.8rem'}}>You've contributed <span style={{color: '#4d6bff'}}>5 XLM</span></div>
+                            </div>
+                        </div>
+
+                        {/* Quick Stats */}
+                        <div className="bento-card bento-stats-card mt-24">
+                            <div className="bento-card-title mb-16">Quick Stats</div>
+                            <div className="bento-stat-row">
+                                <div className="bento-stat-label"><ZapIcon /> Avg. Fee</div>
+                                <div className="bento-stat-val">~0.00001 XLM</div>
+                            </div>
+                            <div className="bento-stat-row">
+                                <div className="bento-stat-label"><Clock size={16}/> Avg. Time</div>
+                                <div className="bento-stat-val">2-5s</div>
+                            </div>
+                            <div className="bento-stat-row">
+                                <div className="bento-stat-label"><GlobeIcon /> Network</div>
+                                <div className="bento-stat-val"><span className="bento-dot green"></span> Stellar Testnet <ChevronDown size={14}/></div>
+                            </div>
+                            <div className="bento-stat-row">
+                                <div className="bento-stat-label"><LayersIcon /> Protocol</div>
+                                <div className="bento-stat-val">Soroban</div>
+                            </div>
+                        </div>
+
+                        {/* Security Card */}
+                        <div className="bento-card bento-security-card mt-24">
+                            <div className="bento-sec-content">
+                                <h4>Your Keys, Your Funds</h4>
+                                <p>LynxX is non-custodial. You're in full control.</p>
+                                <a href="#">Learn More <ArrowRight size={14}/></a>
+                            </div>
+                            <div className="bento-sec-icon">
+                                <ShieldIcon />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                {/* Footer */}
+                <div className="bento-footer">
+                    <img src={logoImg} alt="LynxX logo" className="bento-footer-logo" />
+                    <div className="bento-footer-links">
+                        Built on Stellar & Soroban &nbsp;&bull;&nbsp; Non-custodial &nbsp;&bull;&nbsp; Privacy First
+                        {/* Toast Notification */}
+                        {toast && (
+                            <div style={{
+                                position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999,
+                                background: toast.type === 'success' ? '#10b981' : '#ef4444',
+                                color: '#fff', padding: '12px 24px', borderRadius: '8px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.3)', fontWeight: 500, fontSize: '0.9rem',
+                                animation: 'reveal 0.3s cubic-bezier(0.4,0,0.2,1)'
+                            }}>
+                                {toast.message}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </main>
         </div>
     );
 }

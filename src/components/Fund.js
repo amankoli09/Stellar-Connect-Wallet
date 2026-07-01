@@ -14,8 +14,7 @@ import {
     nativeToScVal,
     scValToNative,
 } from "@stellar/stellar-sdk";
-import { isConnected, signTransaction } from "@stellar/freighter-api";
-import { fetchBalance } from "./Freighter";
+import { fetchBalance, kit } from "./Wallet";
 import { toStroops, fromStroops, tierName } from "../lib/stellar";
 
 // ── Deployment constants (Testnet) ──
@@ -149,9 +148,9 @@ export async function donate(donorPk, xlmAmount) {
     }
 
     // ── Error type 2: wallet not available ──
-    const conn = await isConnected();
-    if (!conn?.isConnected) {
-        throw new FundError("WalletNotFound", "Freighter wallet not detected. Please install or unlock it.");
+    // ── Error type 2: wallet not available ──
+    if (!donorPk) {
+        throw new FundError("WalletNotFound", "Wallet not connected.");
     }
 
     // ── Error type 3: insufficient balance (checked before signing) ──
@@ -190,13 +189,17 @@ export async function donate(donorPk, xlmAmount) {
         throw mapContractError(e);
     }
 
-    // Sign with Freighter.
-    const { signedTxXdr, error } = await signTransaction(prepared.toXDR(), {
-        networkPassphrase: Networks.TESTNET,
-        address: donorPk,
-    });
-    if (error) {
-        throw new FundError("Rejected", "You rejected the transaction in Freighter.");
+    // Sign with Wallet Kit.
+    let signedTxXdr;
+    try {
+        const result = await kit.signTransaction(prepared.toXDR(), {
+            networkPassphrase: Networks.TESTNET,
+            address: donorPk
+        });
+        if (!result.signedTxXdr) throw new Error("Rejected");
+        signedTxXdr = result.signedTxXdr;
+    } catch (error) {
+        throw new FundError("Rejected", "You rejected the transaction in the wallet.");
     }
 
     // Submit and poll for confirmation.

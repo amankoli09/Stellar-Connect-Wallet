@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const STEPS = [
     {
         icon: "🚀",
-        title: "Welcome to StellarFlow",
+        title: "Welcome to LynxX",
         desc: "The non-custodial dApp for instant payments and on-chain crowdfunding on the Stellar blockchain. Let's get you set up in 4 quick steps.",
         action: null,
         actionLabel: null,
